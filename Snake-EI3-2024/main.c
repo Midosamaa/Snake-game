@@ -1,23 +1,38 @@
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "clientAPI.c"
-#include "snakeAPI.c"
+#include "clientAPI.h"
+#include "snakeAPI.h"
+#include "arena.h"
+#include "snakes.h"
+
+// #define DEBUG_KEY_PLAY
+// #define DEBUG_ARENA
+
+// #define DEBUG_SNAKE
+
 t_move button_to_move(char*);
+
 int main (){
 
     connectToServer("localhost", 1234, "midosama");
     char gamename[50];
-    int *sizex = malloc(sizeof(int));
-    int *sizey = malloc(sizeof(int));
-    int *nbwalls = malloc(sizeof (int));
-    int *walls = malloc(4*(*nbwalls)*sizeof(int));
-    waitForSnakeGame("TRAINING RANDOM_PLAYER", gamename, sizex, sizey, nbwalls);
+    int sizex ;
+    int sizey ;
+    int nbwalls;
+    
+    waitForSnakeGame("TRAINING RANDOM_PLAYER", gamename, &sizex, &sizey, &nbwalls);
+    int *walls = malloc(4*nbwalls*sizeof(int));
     int turn = getSnakeArena(walls);
     char button;
     t_move* opponent_move = malloc(sizeof(t_move));
     t_return_code ongoing=NORMAL_MOVE;
+
+    
+
+#ifdef DEBUG_KEY_PLAY
     printArena();
     if (!turn){
         printf("what s your move?\n");
@@ -26,6 +41,7 @@ int main (){
         ongoing = sendMove(button_to_move(&button));
         printArena();
     }
+
     while(ongoing == NORMAL_MOVE){
        ongoing = getMove(opponent_move);
        if(ongoing == NORMAL_MOVE){
@@ -39,15 +55,29 @@ int main (){
         printArena();
        }
     }
+#endif
+#ifdef DEBUG_ARENA
+    Arena *arena=get_arena(&sizex, &sizey, &nbwalls, walls);
+    print_arena(arena);
+    // printArena();
+
+    SNAKE* snake1=init_snake1(arena);
+    print_arena(arena);
+
+    SNAKE* snake2=init_snake2(arena);
+    print_arena(arena);
+
+
+    free_snake(snake1);
+    free_snake(snake2);
+    free_arena(arena);
     free(opponent_move);
     free(walls);
-    free(nbwalls);
-    free(sizex);
-    free(sizey);
     closeConnection();
     return 0;
-}
 
+#endif
+#ifdef DEBUG_KEY_PLAY
 t_move button_to_move(char *button){
     if(*button == 'w'){
         printf("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQC IIII8B move 0\n");
@@ -69,4 +99,8 @@ t_move button_to_move(char *button){
     else {
         printf("ADAKL7MARWASD\n");
     }
+}
+#endif
+
+
 }
