@@ -2,6 +2,7 @@
 #define ARENA_H_NOT_DEFINED
 
 #include "clientAPI.h"
+#include "arena.h"
 #include "snakeAPI.h"
 
 //structures used to make the arena

@@ -1,8 +1,12 @@
+
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
+
 #include "clientAPI.h"
 #include "snakeAPI.h"
 #include "arena.h"
+#include "snakes.h"
 
 void init_cell(Cell* cell) {
     for (int i = 0; i < 4; i++) {
@@ -62,24 +66,24 @@ Arena* get_arena(int* sizeX, int* sizeY, int* nbWalls, int *walls) {
     // Place walls according to the walls array
     for (int i = 0; i < 4 * (*nbWalls); i += 4) {
         if (walls[i+1] == walls[i+3]) {
-            if(walls[i+1]==walls[i+3] +1){
-                arena->grid[walls[i]][walls[i+1]].borders[1] = 1;
-                arena->grid[walls[i+2]][walls[i+3]].borders[3] = 1;
-            }
-            else {
+            if(walls[i]==walls[i+2] +1){
                 arena->grid[walls[i]][walls[i+1]].borders[3] = 1;
                 arena->grid[walls[i+2]][walls[i+3]].borders[1] = 1;
+            }
+            else {//walls[i]==wals[i+2]-1
+                arena->grid[walls[i]][walls[i+1]].borders[1] = 1;
+                arena->grid[walls[i+2]][walls[i+3]].borders[3] = 1;
             }
         }
                
         if (walls[i] == walls[i+2]) {
-            if(walls[i]==walls[i+2] +1){
-                arena->grid[walls[i]][walls[i+1]].borders[2] = 1;
-                arena->grid[walls[i+2]][walls[i+3]].borders[0] = 1;
-            }
-            else {
+            if(walls[i+1]==walls[i+3] +1){
                 arena->grid[walls[i]][walls[i+1]].borders[0] = 1;
                 arena->grid[walls[i+2]][walls[i+3]].borders[2] = 1;
+            }
+            else {
+                arena->grid[walls[i]][walls[i+1]].borders[2] = 1;
+                arena->grid[walls[i+2]][walls[i+3]].borders[0] = 1;
             }
         }
         
@@ -92,26 +96,26 @@ void print_arena(Arena* arena) {
     printf("x=%d y=%d\n", arena->sizex, arena->sizey);
        // Print top border
     printf(" ");
-    for (int j = 0; j < arena->sizey; j++) {
-        printf("._");
-    }
-    printf(".\n");
+    // for (int j = 0; j < arena->sizey; j++) {
+    //     printf("._");
+    // }
+    // printf(".\n");
 
-    for (int i = 0; i < arena->sizex; i++) {
-        // Print left border and cell contents
-        for (int j = 0; j < arena->sizey; j++) {
-            if (j == 0) {
-                printf("|");
-            }
-            printf(arena->grid[i][j].borders[2] ? "_" : " ");
-            printf(arena->grid[i][j].borders[1] ? "|" : ".");
-        }
-        printf("|\n");
-    }
-    printf(" ");
-    for (int j = 0; j < arena->sizey; j++) {
-        printf("._");
-    }
+    // for (int i = 0; i < arena->sizex; i++) {
+    //     // Print left border and cell contents
+    //     for (int j = 0; j < arena->sizey; j++) {
+    //         if (j == 0) {
+    //             printf("|");
+    //         }
+    //         printf(arena->grid[i][j].borders[2] ? "_" : " ");
+    //         printf(arena->grid[i][j].borders[1] ? "|" : ".");
+    //     }
+    //     printf("|\n");
+    // }
+    // printf(" ");
+    // for (int j = 0; j < arena->sizey; j++) {
+    //     printf("._");
+    // }
     printf(".\n");
     printf("x=%d, y-%d\n", arena->sizex, arena->sizey);
     for (int i = 0; i < arena->sizex ; i++) {
