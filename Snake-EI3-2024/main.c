@@ -23,12 +23,11 @@ int main (){
     int sizey ;
     int nbwalls;
     
-    waitForSnakeGame("TRAINING RANDOM_PLAYER", gamename, &sizex, &sizey, &nbwalls);
+    waitForSnakeGame("TRAINING SUPER_PLAYER difficulty=3", gamename, &sizex, &sizey, &nbwalls);
     int *walls = malloc(4*nbwalls*sizeof(int));
     int turn = getSnakeArena(walls);
     char button;
     t_move* opponent_move = malloc(sizeof(t_move));
-    // t_move* ai_move = malloc(sizeof(t_move));
     t_return_code ongoing=NORMAL_MOVE;
 
         
@@ -37,16 +36,14 @@ int main (){
     SNAKE* snake1=init_snake1(arena);
     SNAKE* snake2=init_snake2(arena);
     printArena();
-    print_arena(arena);
+    // print_arena(arena);
     if (!turn){
 
-        ongoing = sendMove(AI_move(arena, &snake1));
-        // *ai_move=AI_move(arena, snake1);
-        // printf("LKAUJDKSHCPFOAIWEHDMFPAOWIDHCNPQOWI%d\n", (int)*ai_move);
+        // ongoing = sendMove(AI_move(arena, &snake1));
+        ongoing = sendMove(new_strat(arena, &snake1));
+        // printf("iudhcowidjcowidjc%d\n", snake1->direction);
         printArena();
-        print_arena(arena);
-        // update_arena(arena, snake1);
-// YOU NEED TO UPDATE THE ARENA MOTHERFUCKER ALSO YOU NEED TO GIVE A SNAKE TO THE OPPONENT SO THAT YOU CAN UPDATE THE ARENA PROPERLY, AND YOU LL NEED TO CHECK THE CASE OF HIS MOVE GOOD LUCK LITTLE FUCKER
+        // print_arena(arena);
         while(ongoing == NORMAL_MOVE){
             ongoing = getMove(opponent_move);
 
@@ -62,17 +59,12 @@ int main (){
             else if (*opponent_move==WEST){
                 snake2=snake_move_west(arena, snake2);
             }
-            // update_arena(arena, snake2);
-            printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
             if(ongoing == NORMAL_MOVE){
-                printf("BBBBBBBBBBBBBBBBBBBBBBBBBBB\n");
-                ongoing = sendMove(AI_move(arena, &snake1));//this is the line causing the segmentation fault
-                // *ai_move=AI_move(arena, snake1);
-                // printf("LKAUJDKSHCPFOAIWEHDMFPAOWIDHCNPQOWI%d\n", (int)(*ai_move));
-                // update_arena(arena, snake1);
-                printf("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\n");
+                // ongoing = sendMove(AI_move(arena, &snake1));
+                ongoing = sendMove(new_strat(arena, &snake1));
+                // printf("iudhcowidjcowidjc%d\n", snake1->direction);
                 printArena();
-                print_arena(arena);
+                 print_arena(arena);
             }
         }   
     }
@@ -94,15 +86,10 @@ int main (){
                 snake1=snake_move_west(arena, snake1);
             }
 
-            // update_arena(arena, snake1);
-            printf("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD\n");
             if(ongoing == NORMAL_MOVE){
-                printf("EEEEEEEEEEEEEEEEEEEEEEEEE\n");
-                ongoing = sendMove(AI_move(arena, &snake2));//this is the line causing the segmentation fault
-                // *ai_move=AI_move(arena, snake2);
-                // printf("LKAUJDKSHCPFOAIWEHDMFPAOWIDHCNPQOWI%d\n", (int)*ai_move);
-                // update_arena(arena, snake2);
-                printf("FFFFFFFFFFFFFFFFFFFFFFF\n");
+                // ongoing = sendMove(AI_move(arena, &snake2));
+                ongoing = sendMove(new_strat(arena, &snake2));
+                // printf("iudhcowidjcowidjc%d\n", snake2->direction);
                 printArena();
                 print_arena(arena);
             }

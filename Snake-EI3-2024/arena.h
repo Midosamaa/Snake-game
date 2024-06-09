@@ -2,8 +2,8 @@
 #define ARENA_H_NOT_DEFINED
 
 #include "clientAPI.h"
-#include "arena.h"
 #include "snakeAPI.h"
+#include "arena.h"
 
 //structures used to make the arena
 typedef struct Cell Cell;
@@ -16,6 +16,11 @@ struct Cell{
     int y;
 
     int center;
+    int visited_up;
+    int visited_left;
+    int visited_down;
+    int visited_right;
+    int access;
 };
 
 struct Arena{

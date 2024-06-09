@@ -13,6 +13,11 @@ void init_cell(Cell* cell) {
         cell->borders[i] = 0;
     }
     cell->center=0;
+    cell->access=0;
+    cell->visited_up=0;
+    cell->visited_down=0;
+    cell->visited_left=0;
+    cell->visited_right=0;
 }
 
 Arena* get_arena(int* sizeX, int* sizeY, int* nbWalls, int *walls) {
@@ -116,13 +121,14 @@ void print_arena(Arena* arena) {
     // for (int j = 0; j < arena->sizey; j++) {
     //     printf("._");
     // }
-    printf(".\n");
-    printf("x=%d, y-%d\n", arena->sizex, arena->sizey);
+    // printf(".\n");
+    // printf("x=%d, y-%d\n", arena->sizex, arena->sizey);
     for (int i = 0; i < arena->sizex ; i++) {
         // Print left border and cell contents
         for (int j = 0; j < arena->sizey; j++) {
             printf("coord: (%d, %d) : ", arena->grid[i][j].x, arena->grid[i][j].y);
-            printf("[%d, %d, %d, %d] : %d\n", arena->grid[i][j].borders[0], arena->grid[i][j].borders[1], arena->grid[i][j].borders[2], arena->grid[i][j].borders[3], arena->grid[i][j].center);
+            printf("[%d, %d, %d, %d] : %d : access: %d  ", arena->grid[i][j].borders[0], arena->grid[i][j].borders[1], arena->grid[i][j].borders[2], arena->grid[i][j].borders[3], arena->grid[i][j].center, arena->grid[i][j].access) ;
+            printf(": up %d: down %d: left %d: right %d\n", arena->grid[i][j].visited_up, arena->grid[i][j].visited_down, arena->grid[i][j].visited_left, arena->grid[i][j].visited_right);
         }
     }
 }
