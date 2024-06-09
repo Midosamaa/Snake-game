@@ -460,9 +460,9 @@ t_move new_strat(Arena* arena, SNAKE** snake){
     }
 
     
-    if((arena->grid[(*snake)->head.x][(*snake)->head.y ].borders[0] != 1) && 
+    if((*snake)->head.y>1 && 
+        (arena->grid[(*snake)->head.x][(*snake)->head.y ].borders[0] != 1) && 
         (arena->grid[(*snake)->head.x][(*snake)->head.y-1 ].center != 1)&&
-        
         arena->grid[(*snake)->head.x][(*snake)->head.y-1].access==max_access(arena,(*snake)->head.x, (*snake)->head.y)){
 
         *snake=snake_move_north(arena, *snake);
@@ -470,28 +470,27 @@ t_move new_strat(Arena* arena, SNAKE** snake){
         printf(" TURN %d\n", (*snake)->turn);
         return NORTH;
     }
-    else if(arena->grid[(*snake)->head.x ][(*snake)->head.y].borders[1] != 1 && 
+    else if((*snake)->head.x<arena->sizex-2 &&
+            arena->grid[(*snake)->head.x ][(*snake)->head.y].borders[1] != 1 && 
             (arena->grid[(*snake)->head.x+1 ][(*snake)->head.y].center != 1 )&&
-
-        arena->grid[(*snake)->head.x+1][(*snake)->head.y].access==max_access(arena,(*snake)->head.x, (*snake)->head.y)
-        ){
+            arena->grid[(*snake)->head.x+1][(*snake)->head.y].access==max_access(arena,(*snake)->head.x, (*snake)->head.y)){
         *snake=snake_move_east(arena, *snake);
         printf("MOVING EAST\n");
         printf(" TURN %d\n", (*snake)->turn);
         return EAST;
     }
-    else if(arena->grid[(*snake)->head.x][(*snake)->head.y ].borders[2] != 1 && 
-        (arena->grid[(*snake)->head.x][(*snake)->head.y+1 ].center != 1)&&
-
+    else if((*snake)->head.y<arena->sizey-2 &&
+            arena->grid[(*snake)->head.x][(*snake)->head.y ].borders[2] != 1 && 
+            (arena->grid[(*snake)->head.x][(*snake)->head.y+1 ].center != 1)&&
         arena->grid[(*snake)->head.x][(*snake)->head.y+1].access==max_access(arena,(*snake)->head.x, (*snake)->head.y)){
         *snake= snake_move_south(arena, *snake);
         printf("MOVING SOUTH\n");
         printf(" TURN %d\n", (*snake)->turn);
         return SOUTH;
     }
-    else if(arena->grid[(*snake)->head.x ][(*snake)->head.y].borders[3] != 1 && 
+    else if((*snake)->head.x>1 &&
+            arena->grid[(*snake)->head.x ][(*snake)->head.y].borders[3] != 1 && 
             (arena->grid[(*snake)->head.x-1 ][(*snake)->head.y].center != 1)&&
-            
             arena->grid[(*snake)->head.x-1][(*snake)->head.y].access==max_access(arena,(*snake)->head.x, (*snake)->head.y)){
         *snake= snake_move_west(arena, *snake);
         printf("MOVING WEST\n");
@@ -500,37 +499,34 @@ t_move new_strat(Arena* arena, SNAKE** snake){
     }
     
 }
+void cell_access(Arena* arena, int x, int y, SNAKE* snake) {
+    arena->grid[x][y].access = 0;
 
-void cell_access(Arena*arena, int x, int y, SNAKE* snake){
-    arena->grid[x][y].access=0;
-    if(arena->grid[x][y].center==1){
-        arena->grid[x][y].access=0;
+    // Vérifier si la cellule est occupée
+    if (arena->grid[x][y].center == 1) {
+        return;
     }
-    if(x==snake->head.x && y-1==snake->head.y && arena->grid[snake->head.x][snake->head.y].borders[0]==1){
-        arena->grid[x][y].access=0;
+
+    // Vérifier les bordures autour de la tête du serpent
+    if ((x == snake->head.x && y - 1 == snake->head.y && arena->grid[snake->head.x][snake->head.y].borders[0] == 1) ||
+        (x == snake->head.x && y + 1 == snake->head.y && arena->grid[snake->head.x][snake->head.y].borders[2] == 1) ||
+        (x - 1 == snake->head.x && y == snake->head.y && arena->grid[snake->head.x][snake->head.y].borders[1] == 1) ||
+        (x + 1 == snake->head.x && y == snake->head.y && arena->grid[snake->head.x][snake->head.y].borders[3] == 1)) {
+        return;
     }
-    if(x==snake->head.x && y+1==snake->head.y && arena->grid[snake->head.x][snake->head.y].borders[2]==1){
-        arena->grid[x][y].access=0;
+
+    // Vérifier l'accessibilité des cellules adjacentes
+    if (y > 0 && arena->grid[x][y].borders[0] == 0 && arena->grid[x][y - 1].center == 0) {
+        arena->grid[x][y].access++;
     }
-     if(x==snake->head.x-1 && y==snake->head.y && arena->grid[snake->head.x][snake->head.y].borders[3]==1){
-        arena->grid[x][y].access=0;
+    if (x < arena->sizex - 1 && arena->grid[x][y].borders[1] == 0 && arena->grid[x + 1][y].center == 0) {
+        arena->grid[x][y].access++;
     }
-     if(x==snake->head.x+1 && y==snake->head.y && arena->grid[snake->head.x][snake->head.y].borders[1]==1){
-        arena->grid[x][y].access=0;
+    if (y < arena->sizey - 1 && arena->grid[x][y].borders[2] == 0 && arena->grid[x][y + 1].center == 0) {
+        arena->grid[x][y].access++;
     }
-    else{
-        if(y>0 && arena->grid[x][y].borders[0]==0 && arena->grid[x][y-1].center==0){
-            arena->grid[x][y].access++;
-        }  
-        if(x<arena->sizex &&arena->grid[x][y].borders[1]==0 && arena->grid[x+1][y].center==0){
-            arena->grid[x][y].access++;
-        } 
-        if(y<arena->sizey && arena->grid[x][y].borders[2]==0 && arena->grid[x][y+1].center==0){
-            arena->grid[x][y].access++;
-        } 
-        if(x>0 && arena->grid[x][y].borders[3]==0 && arena->grid[x-1][y].center==0){
-            arena->grid[x][y].access++;
-        } 
+    if (x > 0 && arena->grid[x][y].borders[3] == 0 && arena->grid[x - 1][y].center == 0) {
+        arena->grid[x][y].access++;
     }
 }
 
@@ -558,5 +554,4 @@ int max_access(Arena* arena, int x, int y){
 }
 
 int is_in_bounds(Arena* arena, int x,int y){
-
 }
