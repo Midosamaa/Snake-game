@@ -445,84 +445,92 @@ void longest_path(Arena* arena, int x, int y) {
 
 }
 
-t_move new_strat(Arena* arena, SNAKE** snake){
-    if((*snake)->head.y>0){
-        cell_access(arena, (*snake)->head.x, (*snake)->head.y-1, *snake);
+t_move new_strat(Arena* arena, SNAKE** snake) {
+    int x = (*snake)->head.x;
+    int y = (*snake)->head.y;
+
+    if (y >0) {
+        cell_access(arena, x, y - 1, *snake);
+        printf(" ACCESSACCESSACCESS UP %d\n", arena->grid[x, y-1]->access);
     }
-    if((*snake)->head.y<arena->sizey){
-        cell_access(arena, (*snake)->head.x, (*snake)->head.y+1, *snake);
+    if (y < arena->sizey - 1) {
+        cell_access(arena, x, y + 1, *snake);
+        printf(" ACCESSACCESSACCESS down %d\n", arena->grid[x, y+1]->access);
     }
-    if((*snake)->head.x>0){
-        cell_access(arena, (*snake)->head.x-1, (*snake)->head.y, *snake);
+    if (x >0) {
+        cell_access(arena, x - 1, y, *snake);
+        printf(" ACCESSACCESSACCESS left %d\n", arena->grid[x-1, y]->access);
     }
-    if((*snake)->head.x<arena->sizex){
-        cell_access(arena, (*snake)->head.x+1, (*snake)->head.y, *snake);
+    if (x < arena->sizex - 1) {
+        cell_access(arena, x + 1, y, *snake);
+        printf(" ACCESSACCESSACCESS right %d\n", arena->grid[x+1, y]->access);
     }
 
-    
-    if((*snake)->head.y>1 && 
-        (arena->grid[(*snake)->head.x][(*snake)->head.y ].borders[0] != 1) && 
-        (arena->grid[(*snake)->head.x][(*snake)->head.y-1 ].center != 1)&&
-        arena->grid[(*snake)->head.x][(*snake)->head.y-1].access==max_access(arena,(*snake)->head.x, (*snake)->head.y)){
+    if (y > 0 && 
+        arena->grid[x][y].borders[0] != 1 && 
+        arena->grid[x][y - 1].center != 1 &&
+        arena->grid[x][y-1].access==max_access(arena, x, y)) {
 
-        *snake=snake_move_north(arena, *snake);
+        *snake = snake_move_north(arena, *snake);
         printf("MOVING NORTH\n");
-        printf(" TURN %d\n", (*snake)->turn);
+        printf("TURN %d\n", (*snake)->turn);
         return NORTH;
     }
-    else if((*snake)->head.x<arena->sizex-2 &&
-            arena->grid[(*snake)->head.x ][(*snake)->head.y].borders[1] != 1 && 
-            (arena->grid[(*snake)->head.x+1 ][(*snake)->head.y].center != 1 )&&
-            arena->grid[(*snake)->head.x+1][(*snake)->head.y].access==max_access(arena,(*snake)->head.x, (*snake)->head.y)){
-        *snake=snake_move_east(arena, *snake);
+    else if (x < arena->sizex - 1 &&
+             arena->grid[x][y].borders[1] != 1 && 
+             arena->grid[x + 1][y].center != 1&&
+             arena->grid[x + 1][y].access==max_access(arena, x, y) ) {
+             
+        *snake = snake_move_east(arena, *snake);
         printf("MOVING EAST\n");
-        printf(" TURN %d\n", (*snake)->turn);
+        printf("TURN %d\n", (*snake)->turn);
         return EAST;
     }
-    else if((*snake)->head.y<arena->sizey-2 &&
-            arena->grid[(*snake)->head.x][(*snake)->head.y ].borders[2] != 1 && 
-            (arena->grid[(*snake)->head.x][(*snake)->head.y+1 ].center != 1)&&
-        arena->grid[(*snake)->head.x][(*snake)->head.y+1].access==max_access(arena,(*snake)->head.x, (*snake)->head.y)){
-        *snake= snake_move_south(arena, *snake);
+    else if (y < arena->sizey - 1 &&
+             arena->grid[x][y].borders[2] != 1 && 
+             arena->grid[x][y + 1].center != 1 &&
+             arena->grid[x][y + 1].access==max_access(arena, x, y)) {
+             
+        *snake = snake_move_south(arena, *snake);
         printf("MOVING SOUTH\n");
-        printf(" TURN %d\n", (*snake)->turn);
+        printf("TURN %d\n", (*snake)->turn);
         return SOUTH;
     }
-    else if((*snake)->head.x>1 &&
-            arena->grid[(*snake)->head.x ][(*snake)->head.y].borders[3] != 1 && 
-            (arena->grid[(*snake)->head.x-1 ][(*snake)->head.y].center != 1)&&
-            arena->grid[(*snake)->head.x-1][(*snake)->head.y].access==max_access(arena,(*snake)->head.x, (*snake)->head.y)){
-        *snake= snake_move_west(arena, *snake);
+    else if (x > 0 &&
+             arena->grid[x][y].borders[3] != 1 && 
+             arena->grid[x - 1][y].center != 1 &&
+             arena->grid[x - 1][y].access==max_access(arena, x, y)) {
+             
+        *snake = snake_move_west(arena, *snake);
         printf("MOVING WEST\n");
-        printf(" TURN %d\n", (*snake)->turn);
+        printf("TURN %d\n", (*snake)->turn);
         return WEST;
     }
-    
 }
 void cell_access(Arena* arena, int x, int y, SNAKE* snake) {
     arena->grid[x][y].access = 0;
 
-    // Vérifier si la cellule est occupée
+    // Check if the cell is occupied
     if (arena->grid[x][y].center == 1) {
         return;
     }
 
-    // Vérifier les bordures autour de la tête du serpent
-    if ((x == snake->head.x && y - 1 == snake->head.y && arena->grid[snake->head.x][snake->head.y].borders[0] == 1) ||
-        (x == snake->head.x && y + 1 == snake->head.y && arena->grid[snake->head.x][snake->head.y].borders[2] == 1) ||
-        (x - 1 == snake->head.x && y == snake->head.y && arena->grid[snake->head.x][snake->head.y].borders[1] == 1) ||
-        (x + 1 == snake->head.x && y == snake->head.y && arena->grid[snake->head.x][snake->head.y].borders[3] == 1)) {
+    // Check the borders around the snake's head
+    if ((x == snake->head.x && y == snake->head.y +1 && arena->grid[x][y].borders[0] == 1) ||
+        (x == snake->head.x && y == snake->head.y -1 && arena->grid[x][y].borders[2] == 1) ||
+        (x == snake->head.x +1 && y == snake->head.y && arena->grid[x][y].borders[3] == 1) ||
+        (x == snake->head.x -1 && y == snake->head.y && arena->grid[x][y].borders[1] == 1)) {
         return;
     }
 
-    // Vérifier l'accessibilité des cellules adjacentes
+    // Update the accessibility of adjacent cells
     if (y > 0 && arena->grid[x][y].borders[0] == 0 && arena->grid[x][y - 1].center == 0) {
         arena->grid[x][y].access++;
     }
-    if (x < arena->sizex - 1 && arena->grid[x][y].borders[1] == 0 && arena->grid[x + 1][y].center == 0) {
+    if (x < arena->sizex  && arena->grid[x][y].borders[1] == 0 && arena->grid[x + 1][y].center == 0) {
         arena->grid[x][y].access++;
     }
-    if (y < arena->sizey - 1 && arena->grid[x][y].borders[2] == 0 && arena->grid[x][y + 1].center == 0) {
+    if (y < arena->sizey  && arena->grid[x][y].borders[2] == 0 && arena->grid[x][y + 1].center == 0) {
         arena->grid[x][y].access++;
     }
     if (x > 0 && arena->grid[x][y].borders[3] == 0 && arena->grid[x - 1][y].center == 0) {
@@ -548,9 +556,13 @@ int max_4(int a, int b, int c, int d){
     return max;
 }
 
-int max_access(Arena* arena, int x, int y){
-    return(max_4(arena->grid[x][y-1].access, arena->grid[x+1][y].access, 
-                arena->grid[x][y+1].access, arena->grid[x-1][y].access));
+int max_access(Arena* arena, int x, int y) {
+    int a = (y > 0) ? arena->grid[x][y - 1].access : -1;
+    int b = (x < arena->sizex - 1) ? arena->grid[x + 1][y].access : -1;
+    int c = (y < arena->sizey - 1) ? arena->grid[x][y + 1].access : -1;
+    int d = (x > 0) ? arena->grid[x - 1][y].access : -1;
+    
+    return max_4(a, b, c, d);
 }
 
 int is_in_bounds(Arena* arena, int x,int y){

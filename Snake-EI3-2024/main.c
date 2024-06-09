@@ -22,8 +22,8 @@ int main (){
     int sizex ;
     int sizey ;
     int nbwalls;
-    
-    waitForSnakeGame("TRAINING SUPER_PLAYER difficulty=3", gamename, &sizex, &sizey, &nbwalls);
+
+    waitForSnakeGame("TRAINING SUPER_PLAYER difficulty=1", gamename, &sizex, &sizey, &nbwalls);
     int *walls = malloc(4*nbwalls*sizeof(int));
     int turn = getSnakeArena(walls);
     char button;
@@ -64,7 +64,7 @@ int main (){
                 ongoing = sendMove(new_strat(arena, &snake1));
                 // printf("iudhcowidjcowidjc%d\n", snake1->direction);
                 printArena();
-                 print_arena(arena);
+                //  print_arena(arena);
             }
         }   
     }
@@ -91,7 +91,7 @@ int main (){
                 ongoing = sendMove(new_strat(arena, &snake2));
                 // printf("iudhcowidjcowidjc%d\n", snake2->direction);
                 printArena();
-                print_arena(arena);
+                // print_arena(arena);
             }
         }
     }

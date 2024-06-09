@@ -127,8 +127,8 @@ void print_arena(Arena* arena) {
         // Print left border and cell contents
         for (int j = 0; j < arena->sizey; j++) {
             printf("coord: (%d, %d) : ", arena->grid[i][j].x, arena->grid[i][j].y);
-            printf("[%d, %d, %d, %d] : %d : access: %d  ", arena->grid[i][j].borders[0], arena->grid[i][j].borders[1], arena->grid[i][j].borders[2], arena->grid[i][j].borders[3], arena->grid[i][j].center, arena->grid[i][j].access) ;
-            printf(": up %d: down %d: left %d: right %d\n", arena->grid[i][j].visited_up, arena->grid[i][j].visited_down, arena->grid[i][j].visited_left, arena->grid[i][j].visited_right);
+            printf("[%d, %d, %d, %d] : %d : access: %d \n ", arena->grid[i][j].borders[0], arena->grid[i][j].borders[1], arena->grid[i][j].borders[2], arena->grid[i][j].borders[3], arena->grid[i][j].center, arena->grid[i][j].access) ;
+            // printf(": up %d: down %d: left %d: right %d\n", arena->grid[i][j].visited_up, arena->grid[i][j].visited_down, arena->grid[i][j].visited_left, arena->grid[i][j].visited_right);
         }
     }
 }
